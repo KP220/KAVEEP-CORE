@@ -205,7 +205,7 @@ RO Verification
 Agent Selection
  │
  ▼
-Task Execution
+Task Coordination
  │
  ▼
 Report Generator
@@ -217,70 +217,6 @@ Approval Required
 External Executor
 ```
 
----
+KAVEEP-CORE coordinates tasks.
 
-# Repository Architecture
-
-```text
-KAVEEP-CORE/
-
-docs/
-
-specs/
-
-src/
-
-tests/
-
-README.md
-
-ARCHITECTURE.md
-
-ROADMAP.md
-```
-
----
-
-# Related Repositories
-
-| Repository | Responsibility |
-|------------|----------------|
-| KAVEEP-POLICY | Safety Rules |
-| KAVEEP-RO | Read-Only Verification |
-| KAVEEP-SIA | System Intelligence |
-| KAVEEP-CORE | Runtime Coordination |
-
----
-
-# Current Development Stage
-
-Version
-
-```
-0.1.0
-```
-
-Status
-
-```
-Foundation
-```
-
----
-
-# Initial Milestones
-
-- Runtime Architecture
-- Task Lifecycle
-- Event Bus
-- State Manager
-- Agent Registry
-- Policy Engine
-- Permission Manager
-- Report Pipeline
-
----
-
-# Guiding Rule
-
-> KAVEEP-CORE exists to make the entire KAVEEP ecosystem safer, more predictable, and easier to reason about—not more powerful.
+It does not directly execute destructive or system-modifying actions.
