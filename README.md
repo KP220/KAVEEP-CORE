@@ -8,19 +8,21 @@
 
 KAVEEP-CORE is the central runtime responsible for coordinating every KAVEEP component.
 
-It does **not** perform domain-specific work.
+It does not perform domain-specific work.
 
-Instead, it manages:
+It coordinates:
 
 - Agents
 - Policies
-- Runtime
+- Runtime services
 - Tasks
 - Events
 - State
 - Reports
 - Safety
 - Permissions
+- Workflows
+- Plugins
 
 Every KAVEEP repository communicates through KAVEEP-CORE.
 
@@ -28,7 +30,7 @@ Every KAVEEP repository communicates through KAVEEP-CORE.
 
 # Mission
 
-KAVEEP-CORE exists to make independent AI agents behave as one coherent system while remaining safe, observable, and controllable.
+KAVEEP-CORE exists to make independent AI agents behave as one coherent system while remaining safe, observable, deterministic, and controllable.
 
 ---
 
@@ -66,7 +68,7 @@ Report
 
 Request Approval
 
-Only after explicit approval may another execution component perform any destructive action.
+Only after explicit approval may another approved execution component perform protected actions.
 
 ---
 
@@ -74,9 +76,7 @@ Only after explicit approval may another execution component perform any destruc
 
 ## 1. Separation of Responsibility
 
-Every repository owns one responsibility.
-
-Example
+Every repository owns one primary responsibility.
 
 ```text
 KAVEEP-POLICY
@@ -90,133 +90,3 @@ KAVEEP-SIA
 
 KAVEEP-CORE
     coordinates everything
-```
-
----
-
-## 2. Safety First
-
-CORE never directly:
-
-- Delete files
-- Move files
-- Rename files
-- Overwrite files
-- Modify user data
-
-CORE coordinates.
-
-Execution belongs elsewhere.
-
----
-
-## 3. Simulation Before Execution
-
-Default workflow
-
-```text
-Observe
-
-↓
-
-Analyze
-
-↓
-
-Simulate
-
-↓
-
-Generate Report
-
-↓
-
-User Approval
-
-↓
-
-Execution (External)
-```
-
-Unsafe workflow
-
-```text
-Observe
-
-↓
-
-Execute Immediately
-```
-
-This workflow is forbidden.
-
----
-
-# Responsibilities
-
-KAVEEP-CORE is responsible for
-
-- Runtime lifecycle
-- Agent registration
-- Task scheduling
-- Event routing
-- State management
-- Policy loading
-- Read-only verification
-- Report aggregation
-- Error recovery
-- Workflow orchestration
-
----
-
-# Non-Responsibilities
-
-CORE must never
-
-- Scan disks directly
-- Clean storage
-- Delete files
-- Modify Windows
-- Change Registry
-- Execute scripts
-- Bypass Policy
-- Ignore RO verification
-
----
-
-# Runtime Pipeline
-
-```text
-User
- │
- ▼
-Request
- │
- ▼
-Task Builder
- │
- ▼
-Policy Validation
- │
- ▼
-RO Verification
- │
- ▼
-Agent Selection
- │
- ▼
-Task Coordination
- │
- ▼
-Report Generator
- │
- ▼
-Approval Required
- │
- ▼
-External Executor
-```
-
-KAVEEP-CORE coordinates tasks.
-
-It does not directly execute destructive or system-modifying actions.
