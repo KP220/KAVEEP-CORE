@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/state_snapshot.schema.json",
+  "title": "StateSnapshot",
+  "description": "Represents an authoritative snapshot of the KAVEEP runtime state.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "timestamp",
+    "correlationId",
+    "sessionId",
+    "source",
+    "runtimeState",
+    "activeAgents",
+    "activeTasks",
+    "workflowCount",
+    "configurationVersion"
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "version": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "correlationId": { "type": "string" },
+    "sessionId": { "type": "string" },
+    "source": { "type": "string" },
+    "target": { "type": "string" },
+    "metadata": { "type": "object" },
+
+    "runtimeState": {
+      "type": "string",
+      "enum": [
+        "BOOTING",
+        "READY",
+        "RUNNING",
+        "PAUSED",
+        "RECOVERING",
+        "SHUTTING_DOWN",
+        "STOPPED",
+        "ERROR"
+      ]
+    },
+    "activeAgents": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "activeTasks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "workflowCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "configurationVersion": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}
