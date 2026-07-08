@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/task_request.schema.json",
+  "title": "TaskRequest",
+  "description": "Represents a request for work inside the KAVEEP runtime.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "timestamp",
+    "correlationId",
+    "sessionId",
+    "source",
+    "taskId",
+    "capability",
+    "priority",
+    "parameters",
+    "requester"
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "version": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "correlationId": { "type": "string" },
+    "sessionId": { "type": "string" },
+    "source": { "type": "string" },
+    "target": { "type": "string" },
+    "metadata": { "type": "object" },
+
+    "taskId": { "type": "string" },
+    "workflowId": { "type": "string" },
+    "capability": { "type": "string" },
+    "priority": {
+      "type": "string",
+      "enum": ["CRITICAL", "HIGH", "NORMAL", "LOW", "BACKGROUND"]
+    },
+    "parameters": { "type": "object" },
+    "requester": { "type": "string" }
+  },
+  "additionalProperties": false
+}
