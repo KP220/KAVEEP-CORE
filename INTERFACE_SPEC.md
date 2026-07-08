@@ -8,41 +8,39 @@ Version
 
 # Purpose
 
-This document defines the communication contracts shared by every KAVEEP repository.
+This document defines the canonical communication contracts shared by every KAVEEP repository.
 
-The goal is to guarantee interoperability, consistency, and backward compatibility across the entire KAVEEP ecosystem.
+It ensures that every component exchanges information using consistent, versioned, deterministic, and auditable interfaces.
 
-No repository may invent incompatible interfaces.
-
-All shared objects must follow this specification.
+This specification is the authoritative source for all shared runtime objects.
 
 ---
 
-# Supported Repositories
+# Scope
 
-Current repositories
+This specification applies to:
 
 - KAVEEP-CORE
 - KAVEEP-POLICY
 - KAVEEP-RO
 - KAVEEP-SIA
-
-Future repositories must comply with this specification.
+- Future KAVEEP repositories
+- Future Plugins
+- Future Runtime Services
 
 ---
 
-# Communication Principles
+# Design Principles
 
-All communication must satisfy:
+Every interface must be:
 
 - Versioned
-- Typed
+- Deterministic
 - Immutable
 - Traceable
-- Deterministic
+- Auditable
+- Backward Compatible
 - Policy Compliant
-
-Every message must be auditable.
 
 ---
 
@@ -53,7 +51,7 @@ User
 
 ↓
 
-CORE
+CORE Runtime
 
 ↓
 
@@ -61,7 +59,7 @@ Event Bus
 
 ↓
 
-Repository
+Repository / Agent
 
 ↓
 
@@ -69,7 +67,7 @@ Response
 
 ↓
 
-CORE
+CORE Runtime
 
 ↓
 
@@ -78,22 +76,24 @@ Report
 
 Repositories never communicate directly.
 
-CORE always coordinates.
+All communication is coordinated through the Core Runtime.
 
 ---
 
-# Standard Object Model
+# Base Object
 
-Every shared object contains:
+Every shared object inherits the following fields.
 
-- ID
-- Version
-- Timestamp
-- Correlation ID
-- Session ID
-- Source
-- Target
-- Metadata
+| Field | Type | Required | Description |
+|------|------|----------|-------------|
+| id | string | Yes | Globally unique identifier |
+| version | string | Yes | Interface version |
+| timestamp | string | Yes | ISO-8601 timestamp |
+| correlationId | string | Yes | Distributed trace identifier |
+| sessionId | string | Yes | Runtime session identifier |
+| source | string | Yes | Originating component |
+| target | string | No | Intended recipient |
+| metadata | object | No | Additional implementation-specific metadata |
 
 ---
 
@@ -103,17 +103,24 @@ Purpose
 
 Represents a request for work.
 
-Fields
+| Field | Type | Required |
+|------|------|----------|
+| taskId | string | Yes |
+| workflowId | string | No |
+| capability | string | Yes |
+| priority | enum | Yes |
+| parameters | object | Yes |
+| requester | string | Yes |
 
-- taskId
-- workflowId
-- sessionId
-- taskType
-- capability
-- priority
-- parameters
-- requester
-- timestamp
+Priority values
+
+```text
+CRITICAL
+HIGH
+NORMAL
+LOW
+BACKGROUND
+```
 
 ---
 
@@ -121,17 +128,24 @@ Fields
 
 Purpose
 
-Represents task completion.
+Represents completion of a task.
 
-Fields
+| Field | Type | Required |
+|------|------|----------|
+| taskId | string | Yes |
+| status | enum | Yes |
+| result | object | No |
+| warnings | array | No |
+| errors | array | No |
+| durationMs | number | No |
 
-- taskId
-- status
-- result
-- warnings
-- errors
-- duration
-- timestamp
+Status values
+
+```text
+COMPLETED
+FAILED
+CANCELLED
+```
 
 ---
 
@@ -141,24 +155,30 @@ Purpose
 
 Represents the result of policy evaluation.
 
-Fields
-
-- policyId
-- version
-- decision
-- reason
-- riskLevel
-- approvalRequired
-- timestamp
+| Field | Type | Required |
+|------|------|----------|
+| policyId | string | Yes |
+| decision | enum | Yes |
+| reason | string | Yes |
+| riskLevel | enum | Yes |
+| approvalRequired | boolean | Yes |
 
 Decision values
 
 ```text
 ALLOW
-
 DENY
-
 REQUIRE_APPROVAL
+```
+
+Risk levels
+
+```text
+NONE
+LOW
+MEDIUM
+HIGH
+CRITICAL
 ```
 
 ---
@@ -167,25 +187,68 @@ REQUIRE_APPROVAL
 
 Purpose
 
-Represents read-only verification.
+Represents a Read-Only verification result.
 
-Fields
+| Field | Type | Required |
+|------|------|----------|
+| verificationId | string | Yes |
+| verified | boolean | Yes |
+| findings | array | Yes |
+| confidence | enum | Yes |
+| evidence | array | No |
 
-- verificationId
-- verified
-- findings
-- confidence
-- evidence
-- timestamp
-
-Confidence
+Confidence values
 
 ```text
 LOW
-
 MEDIUM
-
 HIGH
+```
+
+---
+
+# EventMessage
+
+Purpose
+
+Represents an immutable runtime event.
+
+| Field | Type | Required |
+|------|------|----------|
+| eventId | string | Yes |
+| eventType | string | Yes |
+| payload | object | Yes |
+| priority | enum | Yes |
+
+Events are immutable after publication.
+
+---
+
+# StateSnapshot
+
+Purpose
+
+Represents authoritative runtime state.
+
+| Field | Type | Required |
+|------|------|----------|
+| runtimeState | enum | Yes |
+| activeAgents | array | Yes |
+| activeTasks | array | Yes |
+| workflowCount | integer | Yes |
+| configurationVersion | string | Yes |
+
+Runtime States
+
+```text
+BOOTING
+READY
+RUNNING
+PAUSED
+RECOVERING
+SHUTTING_DOWN
+STOPPED
+ERROR
 ```
 
 ---
@@ -196,88 +259,26 @@ Purpose
 
 Represents runtime health.
 
-Fields
+| Field | Type | Required |
+|------|------|----------|
+| componentId | string | Yes |
+| state | enum | Yes |
+| uptime | integer | No |
+| responseTimeMs | integer | No |
+| warnings | array | No |
+| errors | array | No |
 
-- componentId
-- state
-- uptime
-- responseTime
-- warnings
-- errors
-- timestamp
+Health States
 
----
-
-# AuditRecord
-
-Purpose
-
-Represents immutable evidence.
-
-Fields
-
-- auditId
-- actor
-- action
-- target
-- result
-- timestamp
-- correlationId
-
-Audit records are immutable.
-
----
-
-# StateSnapshot
-
-Purpose
-
-Represents runtime state.
-
-Fields
-
-- runtimeState
-- activeAgents
-- activeTasks
-- workflowCount
-- configurationVersion
-- timestamp
-
----
-
-# WorkflowResult
-
-Purpose
-
-Represents workflow completion.
-
-Fields
-
-- workflowId
-- status
-- completedSteps
-- failedSteps
-- duration
-- reportId
-- timestamp
-
----
-
-# EventMessage
-
-Purpose
-
-Represents runtime events.
-
-Fields
-
-- eventId
-- eventType
-- source
-- target
-- payload
-- priority
-- timestamp
+```text
+UNKNOWN
+STARTING
+HEALTHY
+DEGRADED
+UNHEALTHY
+RECOVERING
+STOPPED
+```
 
 ---
 
@@ -287,14 +288,39 @@ Purpose
 
 Represents generated reports.
 
-Fields
+| Field | Type | Required |
+|------|------|----------|
+| reportId | string | Yes |
+| reportType | string | Yes |
+| schemaVersion | string | Yes |
+| checksum | string | No |
+| location | string | No |
 
-- reportId
-- reportType
-- version
-- location
-- checksum
-- timestamp
+---
+
+# AuditRecord
+
+Purpose
+
+Represents immutable evidence.
+
+| Field | Type | Required |
+|------|------|----------|
+| auditId | string | Yes |
+| actor | string | Yes |
+| action | string | Yes |
+| target | string | No |
+| result | enum | Yes |
+
+Audit values
+
+```text
+SUCCESS
+FAILURE
+DENIED
+```
+
+Audit records are append-only.
 
 ---
 
@@ -302,42 +328,33 @@ Fields
 
 Purpose
 
-Represents standardized errors.
+Represents standardized runtime errors.
 
-Fields
+| Field | Type | Required |
+|------|------|----------|
+| errorCode | string | Yes |
+| errorType | enum | Yes |
+| message | string | Yes |
+| component | string | Yes |
+| recoverable | boolean | Yes |
 
-- errorCode
-- errorType
-- message
-- component
-- recoverable
-- timestamp
-
-Recoverable
+Supported error types
 
 ```text
-true
-
-false
+Validation
+Policy
+Runtime
+Permission
+Security
+Recoverable
+Non-Recoverable
 ```
-
----
-
-# Version Compatibility
-
-Every interface includes:
-
-- Interface Version
-- Minimum Runtime Version
-- Maximum Runtime Version
-
-Unsupported interfaces are rejected.
 
 ---
 
 # Serialization
 
-Preferred formats
+Supported formats
 
 - JSON
 - YAML
@@ -347,41 +364,31 @@ Future support
 - Protocol Buffers
 - CBOR
 
-All serialization formats must preserve identical semantics.
-
----
-
-# Interface Evolution
-
-Rules
-
-- New fields may be added.
-- Existing fields should not change meaning.
-- Deprecated fields must remain documented.
-- Breaking changes require a major version.
-
----
-
-# Security Requirements
-
-Every interface must support:
-
-- integrity verification
-- permission validation
-- policy evaluation
-- audit logging
-
-Sensitive fields must never be exposed unnecessarily.
-
 ---
 
 # Compatibility Rules
 
-Repositories must:
+Every interface:
 
-- ignore unknown optional fields
-- reject invalid required fields
-- preserve backward compatibility whenever possible
+- has an explicit version
+- must preserve backward compatibility whenever practical
+- may introduce optional fields
+- must never silently change field meaning
+
+Breaking changes require a MAJOR version increment.
+
+---
+
+# Security Rules
+
+Interfaces must support:
+
+- Permission validation
+- Policy evaluation
+- Audit logging
+- Integrity verification
+
+Sensitive fields should never be exposed unnecessarily.
 
 ---
 
@@ -389,7 +396,7 @@ Repositories must:
 
 CORE
 
-Coordinates communication.
+Coordinates runtime communication.
 
 POLICY
 
@@ -401,39 +408,58 @@ Returns VerificationResult.
 
 SIA
 
-Returns Analysis Reports.
+Returns analytical results.
 
-Future repositories expose their own typed interfaces while preserving this contract.
+Future repositories expose their own interfaces while preserving this specification.
 
 ---
 
-# Future Interfaces
+# Planned Schema Files
 
-Examples
+The following JSON Schemas should be created.
 
-- PluginManifest
-- CapabilityDescriptor
-- ConfigurationSnapshot
-- RuntimeMetrics
-- TelemetryRecord
-- ResourceProfile
+```text
+schemas/
+
+task_request.schema.json
+
+task_response.schema.json
+
+policy_decision.schema.json
+
+verification_result.schema.json
+
+event_message.schema.json
+
+state_snapshot.schema.json
+
+health_report.schema.json
+
+audit_record.schema.json
+
+report_reference.schema.json
+
+error_object.schema.json
+```
 
 ---
 
 # Success Criteria
 
-This specification succeeds when:
+The specification succeeds when:
 
 - repositories communicate consistently
-- interfaces remain stable
-- upgrades preserve compatibility
-- data structures remain predictable
-- new repositories integrate without redesign
+- interfaces remain deterministic
+- backward compatibility is preserved
+- every shared object is versioned
+- runtime communication remains predictable
 
 ---
 
 # Guiding Principle
 
-A shared interface is a contract.
+Interfaces are contracts.
 
-Every repository must speak the same language so the KAVEEP ecosystem behaves as one coherent system.
+Contracts create interoperability.
+
+Interoperability enables the KAVEEP ecosystem to evolve without breaking existing components.
