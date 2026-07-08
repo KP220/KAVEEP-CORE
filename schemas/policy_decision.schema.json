@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/policy_decision.schema.json",
+  "title": "PolicyDecision",
+  "description": "Represents the result of policy evaluation within the KAVEEP ecosystem.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "timestamp",
+    "correlationId",
+    "sessionId",
+    "source",
+    "policyId",
+    "decision",
+    "reason",
+    "riskLevel",
+    "approvalRequired"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "correlationId": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "target": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+
+    "policyId": {
+      "type": "string"
+    },
+
+    "decision": {
+      "type": "string",
+      "enum": [
+        "ALLOW",
+        "DENY",
+        "REQUIRE_APPROVAL"
+      ]
+    },
+
+    "reason": {
+      "type": "string"
+    },
+
+    "riskLevel": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+
+    "approvalRequired": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}
