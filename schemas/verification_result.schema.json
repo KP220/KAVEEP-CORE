@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/verification_result.schema.json",
+  "title": "VerificationResult",
+  "description": "Represents a read-only verification result produced by KAVEEP-RO.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "timestamp",
+    "correlationId",
+    "sessionId",
+    "source",
+    "verificationId",
+    "verified",
+    "findings",
+    "confidence"
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "version": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "correlationId": { "type": "string" },
+    "sessionId": { "type": "string" },
+    "source": { "type": "string" },
+    "target": { "type": "string" },
+    "metadata": { "type": "object" },
+
+    "verificationId": { "type": "string" },
+    "verified": { "type": "boolean" },
+    "findings": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["LOW", "MEDIUM", "HIGH"]
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "object" }
+    }
+  },
+  "additionalProperties": false
+}
