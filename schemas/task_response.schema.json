@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/task_response.schema.json",
+  "title": "TaskResponse",
+  "description": "Represents the completion result of a runtime task.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "timestamp",
+    "correlationId",
+    "sessionId",
+    "source",
+    "taskId",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "correlationId": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "target": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+
+    "taskId": {
+      "type": "string"
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "COMPLETED",
+        "FAILED",
+        "CANCELLED"
+      ]
+    },
+
+    "result": {
+      "type": "object"
+    },
+
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "errors": {
+      "type": "array",
+      "items": {
+        "$ref": "error_object.schema.json"
+      }
+    },
+
+    "durationMs": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false
+}
