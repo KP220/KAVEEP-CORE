@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/event_message.schema.json",
+  "title": "EventMessage",
+  "description": "Represents an immutable event exchanged through the KAVEEP Event Bus.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "timestamp",
+    "correlationId",
+    "sessionId",
+    "source",
+    "eventId",
+    "eventType",
+    "payload",
+    "priority"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "correlationId": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "target": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+
+    "eventId": {
+      "type": "string"
+    },
+
+    "eventType": {
+      "type": "string"
+    },
+
+    "payload": {
+      "type": "object"
+    },
+
+    "priority": {
+      "type": "string",
+      "enum": [
+        "CRITICAL",
+        "HIGH",
+        "NORMAL",
+        "LOW",
+        "BACKGROUND"
+      ]
+    }
+  },
+  "additionalProperties": false
+}
