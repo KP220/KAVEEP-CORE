@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/report_reference.schema.json",
+  "title": "ReportReference",
+  "description": "Represents a reference to a generated report within the KAVEEP ecosystem.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "timestamp",
+    "correlationId",
+    "sessionId",
+    "source",
+    "reportId",
+    "reportType",
+    "schemaVersion"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "correlationId": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "target": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+
+    "reportId": {
+      "type": "string"
+    },
+
+    "reportType": {
+      "type": "string"
+    },
+
+    "schemaVersion": {
+      "type": "string"
+    },
+
+    "checksum": {
+      "type": "string"
+    },
+
+    "location": {
+      "type": "string",
+      "format": "uri"
+    }
+  },
+  "additionalProperties": false
+}
