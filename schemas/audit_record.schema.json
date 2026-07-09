@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/audit_record.schema.json",
+  "title": "AuditRecord",
+  "description": "Represents an immutable audit record within the KAVEEP runtime.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "timestamp",
+    "correlationId",
+    "sessionId",
+    "source",
+    "auditId",
+    "actor",
+    "action",
+    "result"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "correlationId": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "target": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+
+    "auditId": {
+      "type": "string"
+    },
+
+    "actor": {
+      "type": "string"
+    },
+
+    "action": {
+      "type": "string"
+    },
+
+    "targetResource": {
+      "type": "string"
+    },
+
+    "result": {
+      "type": "string",
+      "enum": [
+        "SUCCESS",
+        "FAILURE",
+        "DENIED"
+      ]
+    }
+  },
+  "additionalProperties": false
+}
