@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/error_object.schema.json",
+  "title": "ErrorObject",
+  "description": "Represents a standardized runtime error within the KAVEEP ecosystem.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "timestamp",
+    "correlationId",
+    "sessionId",
+    "source",
+    "errorCode",
+    "errorType",
+    "message",
+    "component",
+    "recoverable"
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "version": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "correlationId": { "type": "string" },
+    "sessionId": { "type": "string" },
+    "source": { "type": "string" },
+    "target": { "type": "string" },
+    "metadata": { "type": "object" },
+
+    "errorCode": { "type": "string" },
+    "errorType": {
+      "type": "string",
+      "enum": [
+        "Validation",
+        "Policy",
+        "Runtime",
+        "Permission",
+        "Security",
+        "Recoverable",
+        "Non-Recoverable"
+      ]
+    },
+    "message": { "type": "string" },
+    "component": { "type": "string" },
+    "recoverable": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}
