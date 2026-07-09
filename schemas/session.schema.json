@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/session.schema.json",
+  "title": "KcpSession",
+  "description": "Represents a KAVEEP Control Plane session for tracking a reasoning or execution session.",
+  "type": "object",
+  "required": [
+    "sessionId",
+    "schemaVersion",
+    "sessionType",
+    "createdAt",
+    "state",
+    "initiator",
+    "defaultAction",
+    "historyAppendOnly"
+  ],
+  "properties": {
+    "sessionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "sessionType": {
+      "type": "string",
+      "enum": [
+        "REASONING",
+        "EXECUTION",
+        "AUDIT",
+        "POLICY_EVALUATION",
+        "REPORTING",
+        "OTHER"
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "closedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "CREATED",
+        "ACTIVE",
+        "WAITING_FOR_APPROVAL",
+        "PAUSED",
+        "COMPLETED",
+        "FAILED",
+        "CANCELLED",
+        "NO_ACTION"
+      ]
+    },
+    "initiator": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agentRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "evidence.schema.json"
+      },
+      "default": []
+    },
+    "policyRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "policy.schema.json"
+      },
+      "default": []
+    },
+    "auditRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+    "defaultAction": {
+      "type": "string",
+      "const": "NO_ACTION"
+    },
+    "historyAppendOnly": {
+      "type": "boolean",
+      "const": true
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

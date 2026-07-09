@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/audit.schema.json",
+  "title": "AuditRecord",
+  "description": "Represents an append-only audit record for KAVEEP platform activity.",
+  "type": "object",
+  "required": [
+    "auditId",
+    "schemaVersion",
+    "sessionId",
+    "timestamp",
+    "source",
+    "actor",
+    "action",
+    "result",
+    "appendOnly"
+  ],
+  "properties": {
+    "auditId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "sessionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "correlationId": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actor": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agentId": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "targetResource": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "SUCCESS",
+        "FAILURE",
+        "DENIED",
+        "NO_ACTION",
+        "UNVERIFIED"
+      ]
+    },
+    "riskLevel": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL",
+        "UNKNOWN"
+      ]
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "evidence.schema.json"
+      },
+      "default": []
+    },
+    "policyRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "policy.schema.json"
+      },
+      "default": []
+    },
+    "previousAuditId": {
+      "type": "string"
+    },
+    "appendOnly": {
+      "type": "boolean",
+      "const": true
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/evidence.schema.json",
+  "title": "EvidenceReference",
+  "description": "Represents a reference to evidence used by KAVEEP reports, sessions, audits, and policy decisions.",
+  "type": "object",
+  "required": [
+    "evidenceId",
+    "schemaVersion",
+    "evidenceType",
+    "source",
+    "collectedAt",
+    "verificationStatus"
+  ],
+  "properties": {
+    "evidenceId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "evidenceType": {
+      "type": "string",
+      "enum": [
+        "DOCUMENT",
+        "LOG",
+        "EVENT",
+        "REPORT",
+        "POLICY",
+        "USER_INPUT",
+        "SYSTEM_STATE",
+        "EXTERNAL_REFERENCE",
+        "OTHER"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "collectedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "uri": {
+      "type": "string",
+      "format": "uri"
+    },
+    "checksum": {
+      "type": "string"
+    },
+    "checksumAlgorithm": {
+      "type": "string",
+      "enum": [
+        "SHA-256",
+        "SHA-384",
+        "SHA-512",
+        "OTHER"
+      ]
+    },
+    "verificationStatus": {
+      "type": "string",
+      "enum": [
+        "VERIFIED",
+        "UNVERIFIED",
+        "REJECTED"
+      ]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "checksum"
+        ]
+      },
+      "then": {
+        "required": [
+          "checksumAlgorithm"
+        ]
+      }
+    }
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaveep.dev/schemas/agent.schema.json",
+  "title": "AgentPassport",
+  "description": "Represents an agent identity passport used across the KAVEEP ecosystem.",
+  "type": "object",
+  "required": [
+    "agentId",
+    "schemaVersion",
+    "agentName",
+    "agentType",
+    "issuer",
+    "issuedAt",
+    "status",
+    "capabilities",
+    "defaultAction"
+  ],
+  "properties": {
+    "agentId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "agentName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agentType": {
+      "type": "string",
+      "enum": [
+        "CORE",
+        "SIA",
+        "RO",
+        "POLICY",
+        "COMMAND_CENTER",
+        "PLUGIN",
+        "HUMAN",
+        "OTHER"
+      ]
+    },
+    "issuer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "issuedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "SUSPENDED",
+        "REVOKED",
+        "UNKNOWN"
+      ]
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "policyRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "policy.schema.json"
+      },
+      "default": []
+    },
+    "publicKeyRef": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "defaultAction": {
+      "type": "string",
+      "const": "NO_ACTION"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}
