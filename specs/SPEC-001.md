@@ -160,7 +160,9 @@ STOP
 
 # Boot Sequence
 
-The Runtime boot process shall execute in the following order.
+The Runtime boot process shall follow a dependency-safe order.
+
+Agent discovery and registration must not occur until the State Manager, Audit & Logging Service, Event Bus, Configuration Manager, Permission Manager, and Policy references are available.
 
 ```text
 Load Configuration
@@ -168,6 +170,10 @@ Load Configuration
 ↓
 
 Validate Configuration
+
+↓
+
+Create Startup Journal
 
 ↓
 
@@ -179,11 +185,31 @@ Initialize State Manager
 
 ↓
 
+Initialize Audit & Logging Service
+
+↓
+
+Flush Startup Journal to Audit
+
+↓
+
 Initialize Event Bus
 
 ↓
 
-Initialize Audit Service
+Initialize Configuration Manager
+
+↓
+
+Initialize Permission Manager
+
+↓
+
+Load Policy References
+
+↓
+
+Validate Runtime Permissions
 
 ↓
 
@@ -199,7 +225,19 @@ Initialize Health Monitor
 
 ↓
 
-Load Plugins
+Initialize Report Manager
+
+↓
+
+Initialize Plugin Runtime
+
+↓
+
+Discover Plugins
+
+↓
+
+Validate Plugins
 
 ↓
 
@@ -207,14 +245,96 @@ Discover Agents
 
 ↓
 
+Validate Agents
+
+↓
+
 Register Agents
+
+↓
+
+Publish Runtime Ready Event
 
 ↓
 
 Runtime Ready
 ```
 
-Every boot step must report its status through the Audit & Logging Service.
+Early boot steps that occur before the Audit & Logging Service is available must be recorded in a temporary Startup Journal.
+
+Once the Audit & Logging Service is initialized, the Startup Journal must be flushed into immutable audit records.
+
+Lifecycle events must not be emitted until the Event Bus is initialized.
+
+Agent discovery, agent validation, agent registration, plugin activation, and protected runtime operations must not occur until the Permission Manager is initialized and policy references are loaded.
+
+Every boot step after Audit & Logging Service initialization must create an audit record.
+
+Every lifecycle event after Event Bus initialization must be published through the Event Bus.
+
+# Boot Dependency Rules
+
+The Runtime must satisfy the following dependency rules during startup.
+
+## State Before Registration
+
+The State Manager must be initialized before:
+
+* Plugin discovery
+* Agent discovery
+* Agent registration
+* Runtime lifecycle event publication
+* Service state updates
+
+This ensures runtime state is available before any component attempts to publish or mutate state.
+
+## Audit Before Auditable Operations
+
+The Audit & Logging Service must be initialized before:
+
+* Agent registration
+* Plugin activation
+* Permission decisions
+* Protected operations
+* Runtime-ready publication
+
+If a failure occurs during agent registration, the failure must be auditable.
+
+## Event Bus Before Lifecycle Events
+
+The Event Bus must be initialized before:
+
+* Runtime lifecycle events are emitted
+* Agent lifecycle events are emitted
+* Plugin lifecycle events are emitted
+* Health events are emitted
+
+No lifecycle event may be silently dropped because the Event Bus is unavailable.
+
+## Permission Before Protected Operations
+
+The Permission Manager must be initialized before:
+
+* Agent registration
+* Plugin activation
+* Task assignment
+* Workflow execution
+* Protected runtime operations
+
+Protected operations must not proceed unless permission evaluation is available.
+
+## Policy Before Runtime Decisions
+
+Policy references must be loaded before:
+
+* Permission evaluation
+* Agent registration
+* Plugin activation
+* Protected task scheduling
+* Approval-gated workflow steps
+
+The Runtime must never make protected decisions without policy context.
+
 
 ---
 
